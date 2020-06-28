@@ -61,7 +61,7 @@ public class TakeAPhoto extends Fragment{
                     if(bitmap != null){
                         String fileName = String.valueOf(System.currentTimeMillis())+".png";
                         File file = new File(Environment
-                                .getExternalStorageDirectory().getAbsolutePath()+"/Pictures"+fileName);
+                                .getExternalStorageDirectory().getAbsolutePath()+"/Pictures/"+fileName);
                         FileOutputStream fos = null;
                         try {
                             file.createNewFile();

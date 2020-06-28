@@ -9,7 +9,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -23,11 +26,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+
 @SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity {
     final String TAG = getClass().getSimpleName();
     ImageView iv;
+    GridView gv;
     Button btnCamera;
+    File[] imageFiles;
+    String imageFname;
     final static int TAKE_PICTURE = 1;
     BottomNavigationView bottomNavigationView;
     Fragment takeaphoto, gallery;
@@ -35,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, MODE_PRIVATE);
         takeaphoto = new TakeAPhoto();
         gallery = new Gallery();
 
         bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottomNavigationView);
+
+
         //초기화면 뷰를 설정해줌
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_layout,takeaphoto).commitAllowingStateLoss();
@@ -73,7 +82,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
 
 }
