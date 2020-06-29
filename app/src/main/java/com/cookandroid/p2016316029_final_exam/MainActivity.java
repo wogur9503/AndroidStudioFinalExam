@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -61,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()){
 
                         case R.id.tab1:{
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.main_layout, takeaphoto)
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.main_layout, takeaphoto)
                                     .commitAllowingStateLoss();
 
                             return true;
@@ -82,5 +84,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_layout, fragment).commit();
+    }
 }

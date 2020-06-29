@@ -3,6 +3,8 @@ package com.cookandroid.p2016316029_final_exam;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +36,9 @@ public class Gallery extends Fragment {
     int curNum = 0;
     File[] imageFiles;
     String imageFname;
+    InfoPhoto infoPhoto = new InfoPhoto();
+    MyDBHelper dbHelper;
+    SQLiteDatabase sqLiteDatabase;
 
     @Nullable
     @Override
@@ -40,9 +46,13 @@ public class Gallery extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup2 = (ViewGroup) inflater.inflate(R.layout.gallery, container, false);
         gv = (GridView)viewGroup2.findViewById(R.id.gv);
+        dbHelper = new MyDBHelper(getActivity());
+        sqLiteDatabase = dbHelper.getReadableDatabase();
+        dbHelper.onUpgrade(sqLiteDatabase,0,1);
         imageFiles = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures").listFiles();
+        curNum = 0;
         adapter = new PhotoAdapter(imageFiles, getActivity());
-        Bitmap bm = BitmapFactory.decodeFile(imageFiles[curNum].toString());
+        //Bitmap bm = BitmapFactory.decodeFile(imageFiles[curNum].toString());
         gv.setAdapter(adapter);
         return viewGroup2;
     }
@@ -71,8 +81,8 @@ public class Gallery extends Fragment {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            ImageView iv;
+        public View getView(final int i, View view, ViewGroup viewGroup) {
+            final ImageView iv;
             if (null != view)
                 iv = (ImageView)view;
             else {
@@ -82,6 +92,23 @@ public class Gallery extends Fragment {
                 iv.setAdjustViewBounds(true);
                 iv.setImageBitmap(bm);
             }
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sqLiteDatabase = dbHelper.getReadableDatabase();
+                    Cursor cursor;
+                    cursor = sqLiteDatabase.rawQuery("SELECT * FROM imagelist WHERE imageid="+ (i+1) +";", null);
+                    while (cursor.moveToNext()){
+                        String picture = cursor.getString(1);
+                        String detail = cursor.getString(2);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("picture", picture);
+                        bundle.putString("detail", detail);
+                        infoPhoto.setArguments(bundle);
+                    }
+                    ((MainActivity)getActivity()).replaceFragment(infoPhoto);
+                }
+            });
             return iv;
         }
     }
